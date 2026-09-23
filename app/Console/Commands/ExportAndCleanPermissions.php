@@ -16,7 +16,7 @@ class ExportAndCleanPermissions extends Command
     {
         $sheetService = new GoogleSheetsService();
 
-        $spreadsheetId = '16IT-sjzeoA1-Is2gH94N0YJTPLvZfJmDRq4Vvs0yBcc';
+        $spreadsheetId = env('GOOGLE_SHEETS_ID');
 
         // 1️⃣ Actualizar permisos vencidos
         BathroomPermission::whereNull('returned_at')
