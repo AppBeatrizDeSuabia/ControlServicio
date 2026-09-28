@@ -44,15 +44,20 @@ class GoogleSheetsService
         $values = [];
 
         // 1️⃣ Cabeceras
-        $values[] = ['Alumno', 'Profesor', 'Salida', 'Regreso'];
+        $values[] = ['Alumno', 'Profesor', 'Baño', 'Salida', 'Regreso'];
 
         // 2️⃣ Filas de datos
         foreach ($rows as $row) {
             $values[] = [
                 $row['alumn'],
                 $row['teacher'],
-                $row['created_at'] instanceof \DateTime ? $row['created_at']->format('Y-m-d H:i:s') : $row['created_at'],
-                $row['returned_at'] instanceof \DateTime ? $row['returned_at']->format('Y-m-d H:i:s') : ($row['returned_at'] ?? '')
+                $row['bathroom'] ?? 'Sin baño asignado',
+                $row['created_at'] instanceof \DateTime
+                    ? $row['created_at']->format('Y-m-d H:i:s')
+                    : $row['created_at'],
+                $row['returned_at'] instanceof \DateTime
+                    ? $row['returned_at']->format('Y-m-d H:i:s')
+                    : ($row['returned_at'] ?? ''),
             ];
         }
 
