@@ -6,6 +6,10 @@
         <p>{{ session('success') }}</p>
     @endif
 
+    @if(session('error'))
+        <p style="color:red">{{ session('error') }}</p>
+    @endif
+
     <form method="POST" action="{{ route('permissions.export') }}">
         @csrf
         <button type="submit">
