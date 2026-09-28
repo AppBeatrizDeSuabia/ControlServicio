@@ -15,6 +15,7 @@ class BathroomPermission extends Model
     protected $fillable = [
         'teacher_id',
         'alumn_id',
+        'bathroom',
         'returned_at'
     ];
 

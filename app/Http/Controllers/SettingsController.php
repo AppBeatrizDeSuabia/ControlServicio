@@ -9,16 +9,30 @@ class SettingsController extends Controller
 {
     public function update(Request $request)
     {
-        $request->validate([
-            'max_permissions' => 'required|integer|min:1',
+        $bathrooms = [
+            'chicos_1',
+            'chicas_1',
+            'chicos_2',
+            'chicas_2',
+        ];
+
+        $rules = [
             'max_daily_per_alumn' => 'required|integer|min:1',
             'permission_duration_minutes' => 'required|integer|min:1',
-        ]);
+        ];
 
-        Setting::updateOrCreate(
-            ['key' => 'max_permissions'],
-            ['value' => $request->max_permissions]
-        );
+        foreach ($bathrooms as $bathroom) {
+            $rules["max_permissions_{$bathroom}"] = 'required|integer|min:1';
+        }
+
+        $request->validate($rules);
+
+        foreach ($bathrooms as $bathroom) {
+            Setting::updateOrCreate(
+                ['key' => "max_permissions_{$bathroom}"],
+                ['value' => $request->input("max_permissions_{$bathroom}")]
+            );
+        }
 
         Setting::updateOrCreate(
             ['key' => 'max_daily_per_alumn'],

@@ -27,6 +27,7 @@
     <tr>
         <th>Alumno</th>
         <th>Profesor</th>
+        <th>Baño</th>
         <th>Salida</th>
         <th>Regreso</th>
     </tr>
@@ -39,6 +40,7 @@
     <tr>
         <td>{{ $permission->alumn?->full_name }}</td>
         <td>{{ $permission->teacher?->full_name }}</td>
+        <td>{{ $bathrooms[$permission->bathroom] ?? 'Sin baño asignado' }}</td>
         <td>{{ $permission->created_at }}</td>
         <td>{{ $permission->returned_at ?? 'No ha vuelto' }}</td>
     </tr>

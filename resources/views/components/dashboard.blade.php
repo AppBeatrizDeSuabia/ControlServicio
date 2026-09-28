@@ -1,14 +1,14 @@
 <div>
     <h1>Control de Baños</h1>
 
-    {{-- Mensaje si se alcanzó el máximo de permisos activos --}}
-    @if($currentCount >= $maxPermissions)
-        <p style="color:red; font-weight:bold;">
-            ⚠️ Ya se ha alcanzado el límite de permisos activos ({{ $currentCount }}/{{ $maxPermissions }})
-        </p>
-    @endif
+    <h2>Permisos activos por baño</h2>
 
-    <h2>Actualmente en el pasillo: {{ $currentCount }}/{{ $maxPermissions }}</h2>
+    @foreach($bathrooms as $key => $label)
+        <p>
+            {{ $label }}:
+            {{ $currentCountByBathroom->get($key, 0) }}/{{ $maxPermissionsByBathroom[$key] }}
+        </p>
+    @endforeach
 
     @if(session('error'))
         <p style="color:red">{{ session('error') }}</p>
@@ -64,6 +64,14 @@
                 @endforeach
             </select>
             <br><br>
+            <select name="bathroom" required>
+                <option value="">Selecciona un baño</option>
+                @foreach($bathrooms as $key => $label)
+                    <option value="{{ $key }}" {{ old('bathroom') === $key ? 'selected' : '' }}>
+                        {{ $label }}
+                    </option>
+                @endforeach
+            </select>
 
             <button type="submit">Dar permiso</button>
 
@@ -84,6 +92,11 @@
 
             <div>
                 <strong>Alumno:</strong> {{ $permission->alumn?->full_name ?? 'Sin alumno' }}
+            </div>
+
+            <div>
+                <strong>Baño:</strong>
+                {{ $bathrooms[$permission->bathroom] ?? 'Sin baño asignado' }}
             </div>
 
             <div>
@@ -143,8 +156,17 @@
         <form method="POST" action="{{ route('settings.update') }}">
             @csrf
 
-            <label>Máximo permisos activos:</label>
-            <input type="number" name="max_permissions" value="{{ $maxPermissions }}">
+            @foreach($bathrooms as $key => $label)
+                <label>Límite de permisos activos — {{ $label }}:</label>
+                <input
+                    type="number"
+                    name="max_permissions_{{ $key }}"
+                    min="1"
+                    required
+                    value="{{ $maxPermissionsByBathroom[$key] }}"
+                >
+                <br>
+            @endforeach
 
             <label>Máximo diario por alumno:</label>
             <input type="number" name="max_daily_per_alumn" value="{{ $maxDailyPerAlumn }}">

@@ -2,24 +2,20 @@
 
 namespace App\View\Components\bathroom_permissions;
 
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class history extends Component
 {
-    /**
-     * Create a new component instance.
-     */
-    public function __construct()
+    public $permissions;
+    public $bathrooms;
+
+    public function __construct($permissions, $bathrooms)
     {
-        //
+        $this->permissions = $permissions;
+        $this->bathrooms = $bathrooms;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     */
-    public function render(): View|Closure|string
+    public function render()
     {
         return view('components.bathroom_permissions.history');
     }

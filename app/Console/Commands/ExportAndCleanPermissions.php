@@ -14,6 +14,13 @@ class ExportAndCleanPermissions extends Command
 
     public function handle()
     {
+        $bathroomNames = [
+            'chicos_1' => 'Baño chicos 1',
+            'chicas_1' => 'Baño chicas 1',
+            'chicos_2' => 'Baño chicos 2',
+            'chicas_2' => 'Baño chicas 2',
+        ];
+
         $sheetService = new GoogleSheetsService();
 
         $spreadsheetId = env('GOOGLE_SHEETS_ID');
@@ -39,15 +46,16 @@ class ExportAndCleanPermissions extends Command
             $rows[] = [
                 'alumn' => $permission->alumn?->full_name ?? 'Sin alumno',
                 'teacher' => $permission->teacher?->full_name ?? 'Sin profesor',
+                'bathroom' => $bathroomNames[$permission->bathroom] ?? 'Sin baño asignado',
                 'created_at' => $permission->created_at,
-                'returned_at' => $permission->returned_at
+                'returned_at' => $permission->returned_at,
             ];
         }
 
         // 3️⃣ Exportar a Google Sheets
         $sheetService->writeSheetData(
             $spreadsheetId,
-            'bathroom_permissions!A:D',
+            'bathroom_permissions!A:E',
             $rows
         );
 
