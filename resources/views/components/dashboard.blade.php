@@ -1,5 +1,5 @@
 <div>
-    <h1>Control de Pasillo</h1>
+    <h1>Control de Baños</h1>
 
     {{-- Mensaje si se alcanzó el máximo de permisos activos --}}
     @if($currentCount >= $maxPermissions)
