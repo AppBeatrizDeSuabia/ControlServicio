@@ -18,7 +18,7 @@ class importController extends Controller
         $sheetService = new GoogleSheetsService();
 
         // ⚠️ Pega aquí el ID real de tu Google Sheet
-        $spreadsheetId = env('GOOGLE_SHEETS_ID');
+        $spreadsheetId = config('services.google_sheets.spreadsheet_id');
 
         // Leer datos desde Google Sheets según el tipo
         if ($type === 'teachers') {

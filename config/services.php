@@ -1,6 +1,10 @@
 <?php
 
 return [
+    
+    'google_sheets' => [
+        'spreadsheet_id' => env('GOOGLE_SHEETS_ID'),
+    ],
 
     /*
     |--------------------------------------------------------------------------

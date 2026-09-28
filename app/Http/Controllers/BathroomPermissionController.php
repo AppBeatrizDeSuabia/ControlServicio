@@ -190,7 +190,7 @@ class BathroomPermissionController extends Controller
 
         $sheetService = new GoogleSheetsService();
 
-        $spreadsheetId = env('GOOGLE_SHEETS_ID');
+        $spreadsheetId = config('services.google_sheets.spreadsheet_id');
 
         $permissionDuration = (int) Setting::get('permission_duration_minutes', 15);
 
