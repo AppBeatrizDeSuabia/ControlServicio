@@ -16,10 +16,10 @@ class BathroomPermissionController extends Controller
     public function index(Request $request) {
 
         $bathrooms = [
-            'chicos_1' => 'Baño chicos 1',
-            'chicas_1' => 'Baño chicas 1',
-            'chicos_2' => 'Baño chicos 2',
-            'chicas_2' => 'Baño chicas 2',
+            'chicos_1' => 'Baño chicos edificio 1',
+            'chicas_1' => 'Baño chicas edificio 1',
+            'chicos_2' => 'Baño chicos edificio 2',
+            'chicas_2' => 'Baño chicas edificio 2',
         ];
 
         $permissionDuration = (int) Setting::get('permission_duration_minutes', 15);
@@ -163,29 +163,79 @@ class BathroomPermissionController extends Controller
         return back();
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $permissions = BathroomPermission::with('teacher', 'alumn')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
         $bathrooms = [
-            'chicos_1' => 'Baño chicos 1',
-            'chicas_1' => 'Baño chicas 1',
-            'chicos_2' => 'Baño chicos 2',
-            'chicas_2' => 'Baño chicas 2',
+            'chicos_1' => 'Baño chicos edificio 1',
+            'chicas_1' => 'Baño chicas edificio 1',
+            'chicos_2' => 'Baño chicos edificio 2',
+            'chicas_2' => 'Baño chicas edificio 2',
         ];
 
-        return view('bathroom_permissions.history', compact('permissions', 'bathrooms'));
+        $request->validate([
+            'course_id' => 'nullable|exists:courses,id',
+            'alumn_id' => 'nullable|exists:alumns,id',
+            'bathroom' => [
+                'nullable',
+                \Illuminate\Validation\Rule::in(array_keys($bathrooms)),
+            ],
+        ]);
+
+        $query = BathroomPermission::with('teacher', 'alumn')
+            ->orderBy('created_at', 'desc');
+
+        // Si se eligió curso, conservar permisos de alumnos de ese curso.
+        if ($request->filled('course_id')) {
+            $courseId = $request->input('course_id');
+
+            $query->whereHas('alumn', function ($alumnQuery) use ($courseId) {
+                $alumnQuery->where('course_id', $courseId);
+            });
+        }
+
+        // Si se eligió alumno, limitar además a ese alumno.
+        if ($request->filled('alumn_id')) {
+            $query->where('alumn_id', $request->input('alumn_id'));
+        }
+
+        // Si se eligió baño, combinarlo con los filtros anteriores.
+        if ($request->filled('bathroom')) {
+            $query->where('bathroom', $request->input('bathroom'));
+        }
+
+        $permissions = $query->get();
+
+        $courses = Course::orderBy('name')->get();
+
+        // El desplegable de alumnos contiene los del curso elegido.
+        $alumns = $request->filled('course_id')
+            ? Alumn::where('course_id', $request->input('course_id'))
+                ->orderBy('full_name')
+                ->get()
+            : collect();
+
+        $courseId = $request->input('course_id');
+        $alumnId = $request->input('alumn_id');
+        $selectedBathroom = $request->input('bathroom');
+
+        return view('bathroom_permissions.history', compact(
+            'permissions',
+            'bathrooms',
+            'courses',
+            'alumns',
+            'courseId',
+            'alumnId',
+            'selectedBathroom'
+        ));
     }
 
     public function exportPermissions()
     {
         $bathroomNames = [
-            'chicos_1' => 'Baño chicos 1',
-            'chicas_1' => 'Baño chicas 1',
-            'chicos_2' => 'Baño chicos 2',
-            'chicas_2' => 'Baño chicas 2',
+            'chicos_1' => 'Baño chicos edificio 1',
+            'chicas_1' => 'Baño chicas edificio 1',
+            'chicos_2' => 'Baño chicos edificio 2',
+            'chicas_2' => 'Baño chicas edificio 2',
         ];
 
         $sheetService = new GoogleSheetsService();

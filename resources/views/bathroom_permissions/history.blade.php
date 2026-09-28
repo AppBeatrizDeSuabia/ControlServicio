@@ -3,6 +3,11 @@
         <x-bathroom_permissions.history
             :permissions="$permissions"
             :bathrooms="$bathrooms"
+            :courses="$courses"
+            :alumns="$alumns"
+            :courseId="$courseId"
+            :alumnId="$alumnId"
+            :selectedBathroom="$selectedBathroom"
         />
     </x-app.layout>
 </div>
