@@ -205,7 +205,7 @@ class BathroomPermissionController extends Controller
 
         $permissions = $query->get();
 
-        $courses = Course::orderBy('name')->get();
+        $courses = Course::all();
 
         // El desplegable de alumnos contiene los del curso elegido.
         $alumns = $request->filled('course_id')
