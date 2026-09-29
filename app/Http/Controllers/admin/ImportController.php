@@ -70,16 +70,38 @@ class importController extends Controller
                     }
 
                     usort($uniqueCourses, function($a, $b) {
-                        $priorities = ['ESO' => 1, 'BACH' => 2, 'IF' => 3];
-                        $getPriority = function($name) use ($priorities) {
-                            foreach ($priorities as $key => $p) {
-                                if (str_contains(strtoupper($name), $key)) return $p;
+                        $courseOrder = [
+                            'ESO'   => 1,
+                            'BACH'  => 2,
+                            'CFGB'  => 3,
+                            'CMPEL' => 4,
+                            'CMADM' => 5,
+                            'CMEST' => 6,
+                            'CSEIB' => 7,
+                            'CSPEL' => 8,
+                            'CSCAR' => 9,
+                            'CSAD'  => 10,
+                            'CSAIP' => 11,
+                            'CSAYF' => 12,
+                        ];
+
+                        $getPriority = function ($name) use ($courseOrder) {
+                            foreach ($courseOrder as $prefix => $priority) {
+                                if (str_contains(strtoupper($name), $prefix)) {
+                                    return $priority;
+                                }
                             }
+
                             return 99;
                         };
+
                         $pA = $getPriority($a);
                         $pB = $getPriority($b);
-                        if ($pA != $pB) return $pA <=> $pB;
+
+                        if ($pA !== $pB) {
+                            return $pA <=> $pB;
+                        }
+
                         return $a <=> $b;
                     });
 
