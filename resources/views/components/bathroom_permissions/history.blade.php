@@ -12,13 +12,13 @@
 
     @php
         $esoBachCourses = $courses->filter(
-            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
-                || str_starts_with(strtoupper($course->name), 'BACH')
+            fn ($course) => str_contains(strtoupper($course->name), 'ESO')
+                || str_contains(strtoupper($course->name), 'BACH')
         );
 
         $cycleCourses = $courses->reject(
-            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
-                || str_starts_with(strtoupper($course->name), 'BACH')
+            fn ($course) => str_contains(strtoupper($course->name), 'ESO')
+                || str_contains(strtoupper($course->name), 'BACH')
         );
     @endphp
 
