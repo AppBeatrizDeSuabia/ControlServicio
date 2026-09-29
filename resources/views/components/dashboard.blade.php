@@ -19,16 +19,60 @@
     @endif
 
     {{-- Selección de curso --}}
+    @php
+        $esoBachCourses = $courses->filter(
+            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
+                || str_starts_with(strtoupper($course->name), 'BACH')
+        );
+
+        $cycleCourses = $courses->reject(
+            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
+                || str_starts_with(strtoupper($course->name), 'BACH')
+        );
+    @endphp
+
     <form method="GET" action="{{ route('dashboard') }}">
-        <select name="course_id">
-            @foreach($courses as $course)
-                <option value="{{ $course->id }}" {{ $courseId == $course->id ? 'selected' : '' }}>
+        <input type="hidden" name="course_id" value="{{ $courseId }}">
+
+        <label for="course_general">ESO y Bachillerato:</label>
+        <select id="course_general">
+            <option value="">-- Selecciona un curso --</option>
+            @foreach($esoBachCourses as $course)
+                <option value="{{ $course->id }}"
+                    {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}>
                     {{ $course->name }}
                 </option>
             @endforeach
         </select>
+
+        <label for="course_cycle">Ciclos:</label>
+        <select id="course_cycle">
+            <option value="">-- Selecciona un ciclo --</option>
+            @foreach($cycleCourses as $course)
+                <option value="{{ $course->id }}"
+                    {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}>
+                    {{ $course->name }}
+                </option>
+            @endforeach
+        </select>
+
         <button type="submit">Filtrar</button>
     </form>
+
+    <script>
+        document.querySelectorAll('#course_general, #course_cycle').forEach(select => {
+            select.addEventListener('change', function () {
+                const form = this.form;
+                const otherId = this.id === 'course_general'
+                    ? 'course_cycle'
+                    : 'course_general';
+
+                form.querySelector(`#${otherId}`).value = '';
+                form.querySelector('[name="course_id"]').value = this.value;
+                form.submit();
+            });
+        });
+    </script>
 
     {{-- Mensaje alumnos que han llegado al límite diario --}}
     @if($courseId)

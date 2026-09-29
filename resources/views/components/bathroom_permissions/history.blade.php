@@ -10,24 +10,38 @@
         <p style="color:red">{{ session('error') }}</p>
     @endif
 
-    <form method="GET" action="{{ route('permissions.history') }}">
-        <label for="course_id">Curso:</label>
-        <select
-            id="course_id"
-            name="course_id"
-            onchange="
-                const alumno = this.form.querySelector('[name=alumn_id]');
-                if (alumno) alumno.value = '';
-                this.form.submit();
-            "
-        >
-            <option value="">Todos los cursos</option>
+    @php
+        $esoBachCourses = $courses->filter(
+            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
+                || str_starts_with(strtoupper($course->name), 'BACH')
+        );
 
-            @foreach($courses as $course)
-                <option
-                    value="{{ $course->id }}"
-                    {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}
-                >
+        $cycleCourses = $courses->reject(
+            fn ($course) => str_starts_with(strtoupper($course->name), 'ESO')
+                || str_starts_with(strtoupper($course->name), 'BACH')
+        );
+    @endphp
+
+    <form method="GET" action="{{ route('permissions.history') }}">
+        <input type="hidden" name="course_id" value="{{ $courseId }}">
+
+        <label for="course_general">ESO y Bachillerato:</label>
+        <select id="course_general">
+            <option value="">-- Selecciona un curso --</option>
+            @foreach($esoBachCourses as $course)
+                <option value="{{ $course->id }}"
+                    {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}>
+                    {{ $course->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <label for="course_cycle">Ciclos:</label>
+        <select id="course_cycle">
+            <option value="">-- Selecciona un ciclo --</option>
+            @foreach($cycleCourses as $course)
+                <option value="{{ $course->id }}"
+                    {{ (string) $courseId === (string) $course->id ? 'selected' : '' }}>
                     {{ $course->name }}
                 </option>
             @endforeach
@@ -35,18 +49,11 @@
 
         @if($courseId)
             <label for="alumn_id">Alumno:</label>
-            <select
-                id="alumn_id"
-                name="alumn_id"
-                onchange="this.form.submit()"
-            >
+            <select id="alumn_id" name="alumn_id" onchange="this.form.submit()">
                 <option value="">Todos los alumnos del curso</option>
-
                 @foreach($alumns as $alumn)
-                    <option
-                        value="{{ $alumn->id }}"
-                        {{ (string) $alumnId === (string) $alumn->id ? 'selected' : '' }}
-                    >
+                    <option value="{{ $alumn->id }}"
+                        {{ (string) $alumnId === (string) $alumn->id ? 'selected' : '' }}>
                         {{ $alumn->full_name }}
                     </option>
                 @endforeach
@@ -54,18 +61,11 @@
         @endif
 
         <label for="bathroom">Baño:</label>
-        <select
-            id="bathroom"
-            name="bathroom"
-            onchange="this.form.submit()"
-        >
+        <select id="bathroom" name="bathroom" onchange="this.form.submit()">
             <option value="">Todos los baños</option>
-
             @foreach($bathrooms as $key => $label)
-                <option
-                    value="{{ $key }}"
-                    {{ $selectedBathroom === $key ? 'selected' : '' }}
-                >
+                <option value="{{ $key }}"
+                    {{ $selectedBathroom === $key ? 'selected' : '' }}>
                     {{ $label }}
                 </option>
             @endforeach
@@ -75,6 +75,25 @@
             <button type="submit">Filtrar</button>
         </noscript>
     </form>
+
+    <script>
+        document.querySelectorAll('#course_general, #course_cycle').forEach(select => {
+            select.addEventListener('change', function () {
+                const form = this.form;
+                const otherId = this.id === 'course_general'
+                    ? 'course_cycle'
+                    : 'course_general';
+
+                form.querySelector(`#${otherId}`).value = '';
+                form.querySelector('[name="course_id"]').value = this.value;
+
+                const alumn = form.querySelector('[name="alumn_id"]');
+                if (alumn) alumn.value = '';
+
+                form.submit();
+            });
+        });
+    </script>
 
     <form method="POST" action="{{ route('permissions.export') }}">
         @csrf
