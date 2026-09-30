@@ -1,5 +1,5 @@
 <div>
-    <h1>Login Profesores</h1>
+    <h1>Login Profesores/as</h1>
 
     @if($errors->any())
         <div style="color:red">

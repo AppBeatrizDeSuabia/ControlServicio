@@ -1,7 +1,7 @@
 <div>
-    <h1>Control de Baños</h1>
+    <h1>Control de Baños/Pasillos</h1>
 
-    <h2>Permisos activos por baño</h2>
+    <h2>Permisos activos por baño/pasillo</h2>
 
     @foreach($bathrooms as $key => $label)
         <p>

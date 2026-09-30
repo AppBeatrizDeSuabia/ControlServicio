@@ -16,10 +16,10 @@ class BathroomPermissionController extends Controller
     public function index(Request $request) {
 
         $bathrooms = [
-            'chicos_1' => 'Baño chicos edificio 1',
-            'chicas_1' => 'Baño chicas edificio 1',
-            'chicos_2' => 'Baño chicos edificio 2',
-            'chicas_2' => 'Baño chicas edificio 2',
+            'chicos_1' => 'Baño chicos/pasillo edificio 1',
+            'chicas_1' => 'Baño chicas/pasillo edificio 1',
+            'chicos_2' => 'Baño chicos/pasillo edificio 2',
+            'chicas_2' => 'Baño chicas/pasillo edificio 2',
         ];
 
         $permissionDuration = (int) Setting::get('permission_duration_minutes', 15);
@@ -166,10 +166,10 @@ class BathroomPermissionController extends Controller
     public function history(Request $request)
     {
         $bathrooms = [
-            'chicos_1' => 'Baño chicos edificio 1',
-            'chicas_1' => 'Baño chicas edificio 1',
-            'chicos_2' => 'Baño chicos edificio 2',
-            'chicas_2' => 'Baño chicas edificio 2',
+            'chicos_1' => 'Baño chicos/pasillo edificio 1',
+            'chicas_1' => 'Baño chicas/pasillo edificio 1',
+            'chicos_2' => 'Baño chicos/pasillo edificio 2',
+            'chicas_2' => 'Baño chicas/pasillo edificio 2',
         ];
 
         $request->validate([
@@ -230,10 +230,10 @@ class BathroomPermissionController extends Controller
     public function exportPermissions()
     {
         $bathroomNames = [
-            'chicos_1' => 'Baño chicos edificio 1',
-            'chicas_1' => 'Baño chicas edificio 1',
-            'chicos_2' => 'Baño chicos edificio 2',
-            'chicas_2' => 'Baño chicas edificio 2',
+            'chicos_1' => 'Baño chicos/pasillo edificio 1',
+            'chicas_1' => 'Baño chicas/pasillo edificio 1',
+            'chicos_2' => 'Baño chicos/pasillo edificio 2',
+            'chicas_2' => 'Baño chicas/pasillo edificio 2',
         ];
 
         $sheetService = new GoogleSheetsService();
