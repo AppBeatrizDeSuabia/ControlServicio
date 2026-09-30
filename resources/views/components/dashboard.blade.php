@@ -101,8 +101,14 @@
                 @foreach($alumns as $alumn)
                     @php
                         $dailyCount = $salidasHoy[$alumn->id] ?? 0;
+                        $resaltarAlumno = in_array(
+                            mb_strtolower(trim($alumn->full_name)),
+                            array_map('mb_strtolower', config('app.alumnos_resaltados', [])),
+                            true
+                        );
                     @endphp
-                    <option value="{{ $alumn->id }}">
+                    <option value="{{ $alumn->id }}"
+                        @if($resaltarAlumno) style="background-color: #f4a3a8; color: #222;" @endif>
                         {{ $alumn->full_name }} ({{ $dailyCount }} hoy)
                     </option>
                 @endforeach

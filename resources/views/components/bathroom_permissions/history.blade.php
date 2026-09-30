@@ -52,7 +52,15 @@
             <select id="alumn_id" name="alumn_id" onchange="this.form.submit()">
                 <option value="">Todos los alumnos del curso</option>
                 @foreach($alumns as $alumn)
+                    @php
+                        $resaltarAlumno = in_array(
+                            mb_strtolower(trim($alumn->full_name)),
+                            array_map('mb_strtolower', config('app.alumnos_resaltados', [])),
+                            true
+                        );
+                    @endphp
                     <option value="{{ $alumn->id }}"
+                        @if($resaltarAlumno) style="background-color: #f4a3a8; color: #222;" @endif
                         {{ (string) $alumnId === (string) $alumn->id ? 'selected' : '' }}>
                         {{ $alumn->full_name }}
                     </option>
